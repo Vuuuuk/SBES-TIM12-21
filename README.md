@@ -38,7 +38,7 @@ CredentialsStore server treba da obezbedi:
         <body> predstavlja detaljniji opis samo koda ili promena koje su potrebne kako bi se neki problem rešio 
             * možda će biti korisno kasnije, nije obavezno.
 
-        Primer commit-a (bez tela) - perf: added parallelization for taking in requests in the Engine
+        Primer commit-a (bez tela) - perf: added parallelization for taking in requests
 
 4. PULL REQUEST-ove kreiramo posle završavanja svake od celine za koju se dogovorimo da je neko zadužen (ko kako završi dok celine međusobno nisu povezane).
 
