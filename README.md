@@ -11,7 +11,7 @@ CredentialsStore server treba da obezbedi:
 
 ## Dizajn sistema
 
-![SBES - Projektni zadatak 21.](https://i.ibb.co/YfB3qmn/SBES.png)
+![SBES - Projektni zadatak 21.](https://i.ibb.co/vqK59mQ/SBES.png)
 
 ## Formatiranje GitHub repozitorijuma
  
