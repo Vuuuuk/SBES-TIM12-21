@@ -33,7 +33,6 @@ namespace CredentialsStore
             {
                 throw new Exception("That Username is Already Taken!");
             }
-           // throw new NotImplementedException();
         }
 
         public void DeleteAccount(string username)
@@ -58,7 +57,6 @@ namespace CredentialsStore
             {
                 throw new Exception("That User Does Not Exist! Delete Failed");
             }
-           // throw new NotImplementedException();
         }
 
         public void DisableAccount(string username)
