@@ -57,5 +57,10 @@ namespace AuthenticationService
         {
             factory.LockAccount(username);
         }
+
+        public void Test(byte[] data)
+        {
+            factory.Test(data);
+        }
     }
 }

@@ -23,5 +23,7 @@ namespace Common
 
         [OperationContract]
         void DisableAccount(string username);
+        [OperationContract]
+        void Test(byte[] username);
     }
 }

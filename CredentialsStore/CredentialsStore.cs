@@ -1,4 +1,6 @@
-﻿using Common;
+﻿using AESSymmetricAlgorithm;
+using Common;
+using CryptoManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,6 +137,16 @@ namespace CredentialsStore
             {
                 throw new Exception("That User Does Not Exist! Lock Failed");
             }
+
+
+        }
+
+        public void Test(byte[] data)
+        {
+            string keyFile = "../../../SecretKey.txt";
+            //string folderNameAES = "AES/";
+            CryptoTesting.Test_AES_Decrypt(data, SecretKey.LoadKey(keyFile));
+       
         }
     }
 }
