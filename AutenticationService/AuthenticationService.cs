@@ -22,7 +22,7 @@ namespace AuthenticationService
 
         public void Logout()
         {
-            if (Thread.CurrentPrincipal.IsInRole("AccountUsers"))
+            if (Thread.CurrentPrincipal.IsInRole(Groups.generalUser))
                 Console.WriteLine($"{Thread.CurrentPrincipal.Identity.Name} successfully logged out.\n");
                 //TO IMPLEMENT
             else

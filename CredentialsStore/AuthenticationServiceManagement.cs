@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace CredentialsStore
 {
@@ -10,17 +11,20 @@ namespace CredentialsStore
     {
         public void DisableAccount(string username)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Account disabled.\n");
+            //TO IMPLEMENT
         }
 
         public void EnableAccount(string username)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Account enabled.\n");
+            //TO IMPLEMENT
         }
 
         public void LockAccount(string username)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Account locked.\n");
+            //TO IMPLEMENT
         }
     }
 }

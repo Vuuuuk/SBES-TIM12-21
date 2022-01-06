@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.ServiceModel;
+using System.ServiceModel.Security;
 using System.Text;
 
 namespace AuthenticationService
@@ -29,15 +31,29 @@ namespace AuthenticationService
             host.AddServiceEndpoint(typeof(IAuthenticationService), bindingClient, address);
             host.Open();
 
-            //AuthenticationService CLIENT INIT
+            //AuthenticationService CLIENT INIT - Certificate Authentication
 
             NetTcpBinding bindingCredentialsStore = new NetTcpBinding();
-            string credentialsStoreAddress = "net.tcp://localhost:6000/CredentialsStore";
-
-            using (CredentialsStoreProxy credentialsStoreProxy = new CredentialsStoreProxy(bindingCredentialsStore, credentialsStoreAddress)) { }
+            bindingCredentialsStore.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate; //Certificate-based authentication
+            X509Certificate2 serverCertificate = CertificateManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, "credentialsstore"); //Server public-key.CER 
+            EndpointAddress credentialsStoreAddress = new EndpointAddress(new Uri("net.tcp://localhost:6000/CredentialsStore"),
+                                                                          new X509CertificateEndpointIdentity(serverCertificate));
 
             Console.WriteLine($"Authentication servis successfully started by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + ".\n");
 
+            using (CredentialsStoreProxy credentialsStoreProxy = new CredentialsStoreProxy(bindingCredentialsStore, credentialsStoreAddress))
+            {
+                try
+                {
+                    credentialsStoreProxy.LockAccount("mmm");
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.WriteLine("Client certificate check failed. Please contact your system administrator.\n");
+                    credentialsStoreProxy.Abort(); //To avoid CS server faulted state
+                }
+            }
+            
             Console.ReadLine();
         }
     }
