@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.Text;
 
@@ -12,24 +13,30 @@ namespace AuthenticationService
         static void Main(string[] args)
         {
 
-            //SERVER INIT
+            //AuthenticationService SERVER INIT
 
-            NetTcpBinding binding = new NetTcpBinding();
+            NetTcpBinding bindingClient = new NetTcpBinding();
             string address = "net.tcp://localhost:4000/AuthenticationService";
+
+            //WINDOWS AUTHENTICATION PROTOCOL INIT FOR CLIENT
+
+            bindingClient.Security.Mode = SecurityMode.Message; //Safer but slower then SecurityMode.Transport as it encrypts each message separately
+            bindingClient.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows; //Based on windows user accounts
+            bindingClient.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign; //Anti-Tampering signature (per message) protection
+
             ServiceHost host = new ServiceHost(typeof(AuthenticationService));
 
-            host.AddServiceEndpoint(typeof(IAuthenticationService), binding, address);
+            host.AddServiceEndpoint(typeof(IAuthenticationService), bindingClient, address);
             host.Open();
 
-            Console.WriteLine("Authentication servis successfully started.\n");
+            //AuthenticationService CLIENT INIT
 
-            //CLIENT INIT
-
+            NetTcpBinding bindingCredentialsStore = new NetTcpBinding();
             string credentialsStoreAddress = "net.tcp://localhost:6000/CredentialsStore";
-            using (CredentialsStoreProxy credentialsStoreProxy = new CredentialsStoreProxy(binding, credentialsStoreAddress)) { }
 
-            Console.WriteLine("Authentication servis [as a client] successfully started.\n");
+            using (CredentialsStoreProxy credentialsStoreProxy = new CredentialsStoreProxy(bindingCredentialsStore, credentialsStoreAddress)) { }
 
+            Console.WriteLine($"Authentication servis successfully started by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + ".\n");
 
             Console.ReadLine();
         }

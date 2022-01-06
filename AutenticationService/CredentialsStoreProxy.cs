@@ -7,23 +7,14 @@ using System.Text;
 
 namespace AuthenticationService
 {
-    class CredentialsStoreProxy : ChannelFactory<IAccountManagement>, IAccountManagement, IDisposable
+    class CredentialsStoreProxy : ChannelFactory<IAuthenticationServiceManagement>, IAuthenticationServiceManagement, IDisposable
     {
-        IAccountManagement factory;
+        IAuthenticationServiceManagement factory;
 
         public CredentialsStoreProxy(NetTcpBinding binding, string address) : base(binding, address)
         {
+            //Credentials.Windows.AllowNtlm = false; not usable as we dont have domain controllers.
             factory = this.CreateChannel();
-        }
-
-        public void CreateAccount(string username, string password)
-        {
-            factory.CreateAccount(username, password);
-        }
-
-        public void DeleteAccount(string username)
-        {
-            factory.DeleteAccount(username);
         }
 
         public void DisableAccount(string username)

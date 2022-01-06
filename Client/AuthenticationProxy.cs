@@ -13,6 +13,13 @@ namespace Client
 
         public AuthenticationProxy(NetTcpBinding binding, string address) : base(binding, address)
         {
+            //Credentials.Windows.AllowNtlm = false; not usable as we dont have domain controllers.
+            factory = this.CreateChannel();
+        }
+
+        public AuthenticationProxy(NetTcpBinding binding, EndpointAddress address) : base(binding, address)
+        {
+            //Credentials.Windows.AllowNtlm = false; not usable as we dont have domain controllers.
             factory = this.CreateChannel();
         }
 
