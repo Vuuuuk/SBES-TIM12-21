@@ -13,9 +13,9 @@ namespace CredentialsStore
             throw new NotImplementedException();
         }
 
-        public bool ValidateCredentials(string username,string password)
+        public int ValidateCredentials(string username,string password)
         {
-            return true;
+            return 1;
         }
 
         public void DeleteAccount(string username)

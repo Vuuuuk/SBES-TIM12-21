@@ -10,7 +10,7 @@ namespace Common
     public interface IAuthenticationService
     {
         [OperationContract]
-        void Login(string username, string password);
+        int Login(string username, string password);
 
         [OperationContract]
         void Logout(string username);

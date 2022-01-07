@@ -40,5 +40,10 @@ namespace Client
         {
             factory.LockAccount(username);
         }
+
+        public int ValidateCredentials(string username, string password)
+        {
+            return factory.ValidateCredentials(username,password);
+        }
     }
 }

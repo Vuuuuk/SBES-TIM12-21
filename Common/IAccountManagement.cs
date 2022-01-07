@@ -25,6 +25,6 @@ namespace Common
         void DisableAccount(string username);
 
         [OperationContract]
-        bool ValidateCredentials(string username, string password);
+        int ValidateCredentials(string username, string password);
     }
 }

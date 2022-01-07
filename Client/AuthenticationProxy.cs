@@ -16,9 +16,9 @@ namespace Client
             factory = this.CreateChannel();
         }
 
-        public void Login(string username, string password)
+        public int Login(string username, string password)
         {
-            factory.Login(username, password);
+            return factory.Login(username, password);
         }
 
         public void Logout(string username)
