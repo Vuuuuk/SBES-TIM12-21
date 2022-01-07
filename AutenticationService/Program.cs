@@ -15,6 +15,11 @@ namespace AuthenticationService
         static void Main(string[] args)
         {
 
+            //AES SECRET KEY GENERATION
+
+            string secretKey = SecretKey.GenerateKey();
+            SecretKey.StoreKey(secretKey, AES.KeyLocation);
+
             //AuthenticationService SERVER INIT
 
             NetTcpBinding bindingClient = new NetTcpBinding();
@@ -29,6 +34,7 @@ namespace AuthenticationService
             ServiceHost host = new ServiceHost(typeof(AuthenticationService));
 
             host.AddServiceEndpoint(typeof(IAuthenticationService), bindingClient, address);
+
             host.Open();
 
             //AuthenticationService CLIENT INIT - Certificate Authentication
@@ -41,11 +47,11 @@ namespace AuthenticationService
 
             Console.WriteLine($"Authentication servis successfully started by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + ".\n");
 
-            using (CredentialsStoreProxy credentialsStoreProxy = new CredentialsStoreProxy(bindingCredentialsStore, credentialsStoreAddress))
+            using (CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.Instance())
             {
                 try
                 {
-                    credentialsStoreProxy.LockAccount("mmm");
+                    //CALL CS METHODS FOR AS HERE
                 }
                 catch (InvalidOperationException)
                 {

@@ -10,12 +10,15 @@ namespace Common
     public interface IAuthenticationServiceManagement
     {
         [OperationContract]
-        void LockAccount(string username);
+        bool ValidateCredentials(byte[] username, byte[] password);
 
         [OperationContract]
-        void EnableAccount(string username);
+        void LockAccount(byte[] username);
 
         [OperationContract]
-        void DisableAccount(string username);
+        void EnableAccount(byte[] username);
+
+        [OperationContract]
+        void DisableAccount(byte[] username);
     }
 }

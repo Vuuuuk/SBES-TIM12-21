@@ -33,7 +33,7 @@ namespace Client
             {
                 try
                 {
-                    //CALL AS METHODS HERE
+                    authenticationProxy.Login("test123", "test123");
                 }
                 catch (FaultException<InvalidGroupException> ex)
                 {

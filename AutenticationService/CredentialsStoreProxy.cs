@@ -11,7 +11,9 @@ namespace AuthenticationService
 {
     class CredentialsStoreProxy : ChannelFactory<IAuthenticationServiceManagement>, IAuthenticationServiceManagement, IDisposable
     {
-        IAuthenticationServiceManagement factory;
+        private static CredentialsStoreProxy instance = null; //Singleton pattern instance
+
+        IAuthenticationServiceManagement factory = null;
 
         public CredentialsStoreProxy(NetTcpBinding binding, string address) : base(binding, address)
         {
@@ -31,17 +33,38 @@ namespace AuthenticationService
             factory = this.CreateChannel();
         }
 
-        public void DisableAccount(string username)
+        //SINGLETON PATTERN
+        public static CredentialsStoreProxy Instance()
+        {
+            //If the instance is NULL, create one with the parameter bellow using the default Constructor for this class
+            if (instance == null)
+            {
+                NetTcpBinding bindingCredentialsStore = new NetTcpBinding();
+                bindingCredentialsStore.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate; //Certificate-based authentication
+                X509Certificate2 serverCertificate = CertificateManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, "credentialsstore"); //Server public-key.CER 
+                EndpointAddress credentialsStoreAddress = new EndpointAddress(new Uri("net.tcp://localhost:6000/CredentialsStore"),
+                                                                              new X509CertificateEndpointIdentity(serverCertificate));
+                instance = new CredentialsStoreProxy(bindingCredentialsStore, credentialsStoreAddress);
+            }
+            return instance;
+        }
+
+        public bool ValidateCredentials(byte[] username, byte[] password)
+        {
+            return factory.ValidateCredentials(username, password);
+        }
+
+        public void DisableAccount(byte[] username)
         {
             factory.DisableAccount(username);
         }
 
-        public void EnableAccount(string username)
+        public void EnableAccount(byte[] username)
         {
             factory.EnableAccount(username);
         }
 
-        public void LockAccount(string username)
+        public void LockAccount(byte[] username)
         {
             factory.LockAccount(username);
         }

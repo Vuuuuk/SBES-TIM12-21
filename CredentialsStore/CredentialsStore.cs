@@ -11,35 +11,35 @@ namespace CredentialsStore
     {
         public void CreateAccount(string username, string password)
         {
-            if (Thread.CurrentPrincipal.IsInRole(Groups.adminUser)) { }
+            if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser)) { }
             else
                 throw new NotImplementedException();
         }
 
         public void DeleteAccount(string username)
         {
-            if (Thread.CurrentPrincipal.IsInRole(Groups.adminUser)) { }
+            if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser)) { }
             else
                 throw new NotImplementedException();
         }
 
         public void DisableAccount(string username)
         {
-            if (Thread.CurrentPrincipal.IsInRole(Groups.adminUser)) { }
+            if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser)) { }
             else
                 throw new NotImplementedException();
         }
 
         public void EnableAccount(string username)
         {
-            if (Thread.CurrentPrincipal.IsInRole(Groups.adminUser)) { }
+            if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser)) { }
             else
                 throw new NotImplementedException();
         }
 
         public void LockAccount(string username)
         {
-            if (Thread.CurrentPrincipal.IsInRole(Groups.adminUser)) { }
+            if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser)) { }
             else
                 throw new NotImplementedException();
         }
