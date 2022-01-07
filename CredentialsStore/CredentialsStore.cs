@@ -1,7 +1,9 @@
-﻿using Common;
+﻿using Client;
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 
@@ -11,8 +13,11 @@ namespace CredentialsStore
     {
 
         DBHandler handler = new DBHandler();
+        static string authenticationServiceAddress = "net.tcp://localhost:4000/AuthenticationService";
+        AuthenticationProxy authenticationProxy = new AuthenticationProxy(new NetTcpBinding(), authenticationServiceAddress);
 
-        public void CreateAccount(string username, string password)
+
+public void CreateAccount(string username, string password)
         {
             if(!Thread.CurrentPrincipal.IsInRole("Admin")) {
 
@@ -131,6 +136,12 @@ namespace CredentialsStore
 
                 users[users.FindIndex(o => o.GetUsername() == username)].SetLocked(true);
 
+                handler.addUsers(users);
+
+                Thread.Sleep(new TimeSpan(0, 5, 0));
+
+                users = handler.getUsers();
+                users[users.FindIndex(o => o.GetUsername() == username)].SetLocked(false);
                 handler.addUsers(users);
             }
             else

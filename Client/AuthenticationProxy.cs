@@ -16,6 +16,16 @@ namespace Client
             factory = this.CreateChannel();
         }
 
+        public void AccountDisabled(string username)
+        {
+            factory.AccountDisabled(username);
+        }
+
+        public bool CheckIn(string username)
+        {
+            return factory.CheckIn(username);
+        }
+
         public void Login(string username, string password)
         {
             factory.Login(username, password);
