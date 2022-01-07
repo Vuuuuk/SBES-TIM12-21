@@ -21,9 +21,9 @@ namespace Client
             factory.Login(username, password);
         }
 
-        public void Logout()
+        public void Logout(string username)
         {
-            factory.Logout();
+            factory.Logout(username);
         }
     }
 }

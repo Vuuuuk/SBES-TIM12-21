@@ -23,5 +23,8 @@ namespace Common
 
         [OperationContract]
         void DisableAccount(string username);
+
+        [OperationContract]
+        bool ValidateCredentials(string username, string password);
     }
 }

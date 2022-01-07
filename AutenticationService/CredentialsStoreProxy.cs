@@ -20,6 +20,10 @@ namespace AuthenticationService
         {
             factory.CreateAccount(username, password);
         }
+        public bool ValidateCredentials(string username, string password)
+        {
+            factory.ValidateCredentials(username, password);
+        }
 
         public void DeleteAccount(string username)
         {

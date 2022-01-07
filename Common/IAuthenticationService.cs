@@ -13,6 +13,6 @@ namespace Common
         void Login(string username, string password);
 
         [OperationContract]
-        void Logout();
+        void Logout(string username);
     }
 }
