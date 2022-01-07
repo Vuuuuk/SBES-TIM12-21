@@ -11,11 +11,15 @@ namespace CredentialsStore
     {
         public bool ValidateCredentials(byte[] username, byte[] password)
         {
+            //Decrypting data
             string outUsername = AES.DecryptData(username, SecretKey.LoadKey(AES.KeyLocation));
             string outPassword = AES.DecryptData(password, SecretKey.LoadKey(AES.KeyLocation));
+
             Console.WriteLine($"Account - {outUsername} with password {outPassword} verified successfully.\n");
-            return true;
+
             //TO IMPLEMENT
+
+            return true;
         }
 
         public void DisableAccount(byte[] username)

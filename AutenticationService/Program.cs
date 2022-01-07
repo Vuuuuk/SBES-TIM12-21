@@ -37,17 +37,9 @@ namespace AuthenticationService
 
             host.Open();
 
-            //AuthenticationService CLIENT INIT - Certificate Authentication
-
-            NetTcpBinding bindingCredentialsStore = new NetTcpBinding();
-            bindingCredentialsStore.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate; //Certificate-based authentication
-            X509Certificate2 serverCertificate = CertificateManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, "credentialsstore"); //Server public-key.CER 
-            EndpointAddress credentialsStoreAddress = new EndpointAddress(new Uri("net.tcp://localhost:6000/CredentialsStore"),
-                                                                          new X509CertificateEndpointIdentity(serverCertificate));
-
             Console.WriteLine($"Authentication servis successfully started by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + ".\n");
 
-            using (CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.Instance())
+            using (CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.SingletonInstance())
             {
                 try
                 {

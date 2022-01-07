@@ -11,6 +11,8 @@ namespace AuthenticationService
 {
     class CredentialsStoreProxy : ChannelFactory<IAuthenticationServiceManagement>, IAuthenticationServiceManagement, IDisposable
     {
+
+        [ThreadStatic] //Thread safety is important, every thread is using its own instance
         private static CredentialsStoreProxy instance = null; //Singleton pattern instance
 
         IAuthenticationServiceManagement factory = null;
@@ -23,7 +25,6 @@ namespace AuthenticationService
         public CredentialsStoreProxy(NetTcpBinding binding, EndpointAddress address) : base(binding, address)
         {
             //Client certificate configuration init
-
             string clientName = CertificateFormatter.ParseName(WindowsIdentity.GetCurrent().Name); //Parsed WindowsIdentity.Name
             this.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.ChainTrust; //Authority validation mode
             this.Credentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck; //Do not check if Authority marked the certificate as unusable 
@@ -34,18 +35,21 @@ namespace AuthenticationService
         }
 
         //SINGLETON PATTERN
-        public static CredentialsStoreProxy Instance()
+        public static CredentialsStoreProxy SingletonInstance()
         {
             //If the instance is NULL, create one with the parameter bellow using the default Constructor for this class
             if (instance == null)
             {
+                //CS server certificate configuration init
                 NetTcpBinding bindingCredentialsStore = new NetTcpBinding();
                 bindingCredentialsStore.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate; //Certificate-based authentication
                 X509Certificate2 serverCertificate = CertificateManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, "credentialsstore"); //Server public-key.CER 
                 EndpointAddress credentialsStoreAddress = new EndpointAddress(new Uri("net.tcp://localhost:6000/CredentialsStore"),
                                                                               new X509CertificateEndpointIdentity(serverCertificate));
+
                 instance = new CredentialsStoreProxy(bindingCredentialsStore, credentialsStoreAddress);
             }
+
             return instance;
         }
 

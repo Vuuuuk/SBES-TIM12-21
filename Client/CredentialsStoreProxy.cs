@@ -16,11 +16,6 @@ namespace Client
             factory = this.CreateChannel();
         }
 
-        public CredentialsStoreProxy(NetTcpBinding binding, EndpointAddress address) : base(binding, address)
-        {
-            factory = this.CreateChannel();
-        }
-
         public void CreateAccount(string username, string password)
         {
             factory.CreateAccount(username, password);

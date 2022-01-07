@@ -17,12 +17,6 @@ namespace Client
             factory = this.CreateChannel();
         }
 
-        public AuthenticationProxy(NetTcpBinding binding, EndpointAddress address) : base(binding, address)
-        {
-            //Credentials.Windows.AllowNtlm = false; not usable as we dont have domain controllers.
-            factory = this.CreateChannel();
-        }
-
         public void Login(string username, string password)
         {
             factory.Login(username, password);
