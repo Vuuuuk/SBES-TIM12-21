@@ -68,13 +68,21 @@ namespace Common
             lockedTime = value;
         }
 
-        public User(string username, string password, bool locked, bool disabled, DateTime lockedTime)
+        public User(string username, string password, bool locked, bool disabled, DateTime lockedTime, bool admin)
         {
             this.SetUsername(username);
             this.SetPassword(password);
             this.SetLocked(locked);
             this.SetDisabled(disabled);
             this.SetLockedTime(lockedTime);
+            isAdmin = admin;
+        }
+
+        private bool isAdmin;
+
+        public bool getAdmin()
+        {
+            return isAdmin;
         }
 
         public DateTime getLockedDuration()

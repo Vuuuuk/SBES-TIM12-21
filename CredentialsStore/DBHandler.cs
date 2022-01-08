@@ -21,11 +21,13 @@ namespace CredentialsStore
             string text = "";
             string locked;
             string disabled;
+            string admin;
 
             if (U.GetLocked()) locked = "Y"; else locked = "N";
             if (U.GetDisabled()) disabled = "Y"; else disabled = "N";
+            if (U.getAdmin()) admin = "Y"; else admin = "N";
             text = text + U.GetUsername() + "|" + U.GetPassword() + "|" + locked + "|" + disabled + "|" +
-                U.GetLockedTime().Year + "|" + U.GetLockedTime().Month + "|" + U.GetLockedTime().Day + "\n";
+                U.GetLockedTime().Year + "|" + U.GetLockedTime().Month + "|" + U.GetLockedTime().Day +  "|" + admin + "|"  + "\n";
 
             StreamWriter sw = new StreamWriter("users.txt",true, Encoding.ASCII);
             sw.WriteLine(text);
@@ -48,6 +50,7 @@ namespace CredentialsStore
 
                     bool locked = false;
                     bool disabled = false;
+                    bool admin = false;
 
 
 
@@ -56,8 +59,11 @@ namespace CredentialsStore
                         locked = true;
                     if (args[3] == "Y")
                         disabled = true;
+                    if (args[7] == "Y")
+                        admin = true;
 
-                    User U = new User(args[0], args[1], locked, disabled, new DateTime(int.Parse(args[4]), int.Parse(args[5]), int.Parse(args[6])));
+
+                    User U = new User(args[0], args[1], locked, disabled, new DateTime(int.Parse(args[4]), int.Parse(args[5]), int.Parse(args[6])),admin);
                     ret.Add(U);
                     line = sr.ReadLine();
                 }
@@ -78,14 +84,16 @@ namespace CredentialsStore
             string text = "";
             string locked;
             string disabled;
+            string admin;
 
             foreach (User U in users)
             {
 
                 if (U.GetLocked()) locked = "Y"; else locked = "N";
                 if (U.GetDisabled()) disabled = "Y"; else disabled = "N";
+                if (U.getAdmin()) admin = "Y"; else admin = "N";
                 text = text + U.GetUsername() + "|" + U.GetPassword() + "|" + locked + "|" + disabled + "|" +
-                    U.GetLockedTime().Year + "|" + U.GetLockedTime().Month + "|" + U.GetLockedTime().Day +"\n";
+                    U.GetLockedTime().Year + "|" + U.GetLockedTime().Month + "|" + U.GetLockedTime().Day + "|" + admin + "|" + "\n";
             }
             StreamWriter sw = new StreamWriter("users.txt",false, Encoding.ASCII);
             sw.WriteLine(text);

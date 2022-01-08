@@ -9,6 +9,14 @@ namespace Common
     [ServiceContract]
     public interface IAccountManagement
     {
+
+
+        [OperationContract]
+        int ValidateCredentials(string username, string password);
+
+        [OperationContract]
+        string CheckIn(string user);
+
         [OperationContract]
         void CreateAccount(string username, string password);
 

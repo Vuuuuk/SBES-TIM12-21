@@ -28,7 +28,7 @@ public void CreateAccount(string username, string password)
             }
 
 
-            User U = new User(username, password, false, false, DateTime.Now);
+            User U = new User(username, password, false, false, DateTime.Now, false);
             List<User> users = handler.getUsers();
             if (users.FindIndex(o => o.GetUsername() == username) == -1)
             {
@@ -91,6 +91,9 @@ public void CreateAccount(string username, string password)
             }
         }
 
+      
+
+
         public void EnableAccount(string username)
         {
 
@@ -148,6 +151,76 @@ public void CreateAccount(string username, string password)
             {
                 throw new Exception("That User Does Not Exist! Lock Failed");
             }
+        }
+
+        public int ValidateCredentials(string username, string password)
+        {
+            //decription
+
+            List<User> users = handler.getUsers();
+
+            int index = users.FindIndex(o => o.GetUsername() == username);
+
+            if (index == -1)
+                return 0;
+
+            if(users[index].GetPassword() == password)
+            {
+                if (users[index].GetDisabled()) return -2;
+                if (users[index].GetLocked()) return -3;
+                if (users[index].getAdmin())
+                    return 2;
+                else
+                    return 1;
+            }
+            else
+            {
+                return -1;
+            }
+
+            /*      Returns:
+             * 
+             *    -3 = Locked
+             *    -2 = Disabled
+             *    -1 = Wrong Password
+             *     0 = Does not exist
+             *     1 = Classic User
+             *     2 = Admin User
+             *
+             **/
+
+
+        }
+
+
+
+
+
+     
+        public string CheckIn(string user)
+        {
+            List<User> userz = handler.getUsers();
+
+
+            string username = user.Split('|')[0];
+                DateTime time = DateTime.Parse(user.Split('|')[1]);
+                string state = "N";
+                int index = userz.FindIndex(o => o.GetUsername() == user);
+                if (userz[index].GetDisabled()) state = "D";
+                if (userz[index].GetLocked()) state = "L";
+                if (time.AddMinutes(5) < DateTime.Now) state = "T";
+
+            return state;
+
+            /*      Returns:
+              * 
+                  *    N = OK
+                  *    D = Disabled
+                  *    L = Locked
+                  *    T = TimeOut
+              **/
+
+
         }
     }
 }
