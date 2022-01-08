@@ -35,6 +35,7 @@ namespace CredentialsStore
                         return -2; //USER IS LOCKED
 
                     Console.WriteLine($"Account - {outUsername} with password {outPassword} verified successfully.\n");
+                    db.addUsers(users);
                     return 1;
                 }
 

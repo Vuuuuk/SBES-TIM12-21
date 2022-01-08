@@ -41,6 +41,7 @@ namespace Common
         public void SetLocked(bool value)
         {
             locked = value;
+            lockedTime = "";
         }
 
         private bool disabled;

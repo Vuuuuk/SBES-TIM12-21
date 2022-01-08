@@ -10,10 +10,24 @@ namespace CredentialsStore
 {
     public class CredentialsStore : IAccountManagement
     {
+        // Users database init
+        UsersDB handler = new UsersDB();
+
         public void CreateAccount(string username, string password)
         {
-            if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser)) 
-                Console.WriteLine("Account created.");
+            if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser))
+            {
+                User user = new User(username, password, false, false, string.Empty);
+                List<User> users = handler.getUsers();
+                if (users.FindIndex(o => o.GetUsername() == username) == -1)
+                {
+                    users.Add(user);
+                    handler.addUsers(users);
+                    Console.WriteLine($"Account - {username} successfully created.");
+                }
+                else
+                    throw new FaultException<InvalidUserException>(new InvalidUserException("That username already exists, please try again.\n"));
+            }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }
@@ -21,7 +35,18 @@ namespace CredentialsStore
         public void DeleteAccount(string username)
         {
             if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser))
-                Console.WriteLine("Account deleted.");
+            {
+                List<User> users = handler.getUsers();
+                if ((users.FindIndex(o => o.GetUsername() == username) != -1))
+                {
+                    users.RemoveAt(users.FindIndex(o => o.GetUsername() == username));
+                    handler.addUsers(users);
+
+                    Console.WriteLine($"Account - {username} successfully deleted.");
+                }
+                else
+                    throw new FaultException<InvalidUserException>(new InvalidUserException("That username does not exists, please try again.\n"));
+            }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }
@@ -29,7 +54,18 @@ namespace CredentialsStore
         public void DisableAccount(string username)
         {
             if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser))
-                Console.WriteLine("Account disabled.");
+            {
+                List<User> users = handler.getUsers();
+                if ((users.FindIndex(o => o.GetUsername() == username) != -1))
+                {
+                    users[users.FindIndex(o => o.GetUsername() == username)].SetDisabled(true);
+                    handler.addUsers(users);
+
+                    Console.WriteLine($"Account - {username} successfully disabled.");
+                }
+                else
+                    throw new FaultException<InvalidUserException>(new InvalidUserException("That username does not exists, please try again.\n"));
+            }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }
@@ -37,7 +73,20 @@ namespace CredentialsStore
         public void EnableAccount(string username)
         {
             if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser))
-                Console.WriteLine("Account enabled.");
+            {
+                List<User> users = handler.getUsers();
+                if ((users.FindIndex(o => o.GetUsername() == username) != -1))
+                {
+                    users[users.FindIndex(o => o.GetUsername() == username)].SetDisabled(false);
+                    users[users.FindIndex(o => o.GetUsername() == username)].SetLocked(false);
+
+                    handler.addUsers(users);
+
+                    Console.WriteLine($"Account - {username} succesfully enabled.");
+                }
+                else
+                    throw new FaultException<InvalidUserException>(new InvalidUserException("That username does not exists, please try again.\n"));
+            }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }
@@ -45,7 +94,19 @@ namespace CredentialsStore
         public void LockAccount(string username)
         {
             if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser))
-                Console.WriteLine("Account locked.");
+            {
+                List<User> users = handler.getUsers();
+                if ((users.FindIndex(o => o.GetUsername() == username) != -1))
+                {
+                    users[users.FindIndex(o => o.GetUsername() == username)].SetLocked(true);
+                    users[users.FindIndex(o => o.GetUsername() == username)].SetLockedTime();
+                    handler.addUsers(users);
+
+                    Console.WriteLine($"Account - {username} succesfully locked.");
+                }
+                else
+                    throw new FaultException<InvalidUserException>(new InvalidUserException("That username does not exists, please try again.\n"));
+            }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }

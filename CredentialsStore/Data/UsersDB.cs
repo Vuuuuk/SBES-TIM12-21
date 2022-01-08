@@ -24,7 +24,7 @@ namespace CredentialsStore
             else disabled = "N";
 
             text = text + U.GetUsername() + "|" + U.GetPassword() + "|" + locked + "|" + disabled + "|" +
-                          U.GetLockedTime() + "\n";
+                          U.GetLockedTime();
 
             StreamWriter sw = new StreamWriter("usersDB.txt", true, Encoding.ASCII);
             sw.WriteLine(text);
@@ -45,8 +45,8 @@ namespace CredentialsStore
                 text = text + U.GetUsername() + "|" + U.GetPassword() + "|" + locked + "|" + disabled + "|" +
                     U.GetLockedTime() + "\n";
             }
-            StreamWriter sw = new StreamWriter("users.txt", false, Encoding.ASCII);
-            sw.WriteLine(text);
+            StreamWriter sw = new StreamWriter("usersDB.txt", false, Encoding.ASCII);
+            sw.Write(text);
             sw.Close();
         }
 
@@ -71,6 +71,16 @@ namespace CredentialsStore
                     if (args[3] == "Y")
                         disabled = true;
 
+                    //Automatic account unlocking based on getUsers() method call
+                    if (locked)
+                    {
+                        int vreme =  ((int.Parse(args[4].Split(':')[0]) * 60) + (int.Parse(args[4].Split(':')[1]))) + 1; //alter with the configuration parameter
+                        if (vreme <= ((DateTime.Now.Hour * 60) + DateTime.Now.Minute))
+                        {
+                            locked = false;
+                            args[4] = "";
+                        }
+                    }
 
                     User U = new User(args[0], args[1], locked, disabled, args[4]);
                     ret.Add(U);
@@ -84,6 +94,5 @@ namespace CredentialsStore
 
             return ret;
         }
-
     }
 }

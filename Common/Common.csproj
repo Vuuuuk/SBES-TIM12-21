@@ -48,6 +48,7 @@
     <Compile Include="Cryptography\SecretKey.cs" />
     <Compile Include="Data\User.cs" />
     <Compile Include="Exceptions\InvalidGroupException.cs" />
+    <Compile Include="Exceptions\InvalidUserException.cs" />
     <Compile Include="Groups\Groups.cs" />
     <Compile Include="IAccountManagement.cs" />
     <Compile Include="IAuthenticationService.cs" />

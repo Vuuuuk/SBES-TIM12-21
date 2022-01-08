@@ -104,10 +104,17 @@ namespace Client
                                     Console.Write("Account password: ");
                                     password = Console.ReadLine();
                                     credentialsStoreProxy.CreateAccount(username, password);
+                                    Console.WriteLine("Account successfully created.\n");
                                     break;
 
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                                catch (FaultException<InvalidUserException> ex)
                                 {
                                     Console.WriteLine(ex.Detail.exceptionMessage);
                                     username = "";
@@ -119,9 +126,16 @@ namespace Client
                                     Console.Write("Account username: ");
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.DeleteAccount(username);
+                                    Console.WriteLine("Account successfully deleted.\n");
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                                catch (FaultException<InvalidUserException> ex)
                                 {
                                     Console.WriteLine(ex.Detail.exceptionMessage);
                                     username = "";
@@ -133,6 +147,7 @@ namespace Client
                                     Console.Write("Account username: ");
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.DisableAccount(username);
+                                    Console.WriteLine("Account successfully disabled.\n");
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
@@ -141,15 +156,29 @@ namespace Client
                                     username = "";
                                     break;
                                 }
+                                catch (FaultException<InvalidUserException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+
+                                }
                             case "5":
                                 try
                                 {
                                     Console.Write("Account username: ");
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.EnableAccount(username);
+                                    Console.WriteLine("Account successfully enabled.\n");
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                                catch (FaultException<InvalidUserException> ex)
                                 {
                                     Console.WriteLine(ex.Detail.exceptionMessage);
                                     username = "";
@@ -161,9 +190,16 @@ namespace Client
                                     Console.Write("Account username: ");
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.LockAccount(username);
+                                    Console.WriteLine("Account successfully locked.\n");
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                                catch (FaultException<InvalidUserException> ex)
                                 {
                                     Console.WriteLine(ex.Detail.exceptionMessage);
                                     username = "";
