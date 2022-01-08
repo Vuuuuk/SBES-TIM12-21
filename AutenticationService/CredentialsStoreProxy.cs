@@ -53,24 +53,9 @@ namespace AuthenticationService
             return instance;
         }
 
-        public bool ValidateCredentials(byte[] username, byte[] password)
+        public int ValidateCredentials(byte[] username, byte[] password)
         {
             return factory.ValidateCredentials(username, password);
-        }
-
-        public void DisableAccount(byte[] username)
-        {
-            factory.DisableAccount(username);
-        }
-
-        public void EnableAccount(byte[] username)
-        {
-            factory.EnableAccount(username);
-        }
-
-        public void LockAccount(byte[] username)
-        {
-            factory.LockAccount(username);
         }
     }
 }

@@ -17,14 +17,14 @@ namespace Client
             factory = this.CreateChannel();
         }
 
-        public void Login(string username, string password)
+        public int Login(string username, string password)
         {
-            factory.Login(username, password);
+            return factory.Login(username, password);
         }
 
-        public void Logout()
+        public int Logout(string username)
         {
-            factory.Logout();
+            return factory.Logout(username);
         }
     }
 }

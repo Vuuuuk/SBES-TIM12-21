@@ -53,6 +53,13 @@ namespace AuthenticationService
             }
             
             Console.ReadLine();
+
+            //RESET CURRENTLY LOGGED IN USERS ON AS CLOSE
+
+            CurrentUsers users = new CurrentUsers();
+            users.resetCurrentUsers();
+
+            host.Close();
         }
     }
 }

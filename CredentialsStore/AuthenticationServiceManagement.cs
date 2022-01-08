@@ -9,35 +9,36 @@ namespace CredentialsStore
 {
     public class AuthenticationServiceManagement : IAuthenticationServiceManagement
     {
-        public bool ValidateCredentials(byte[] username, byte[] password)
+        UsersDB db = new UsersDB();
+
+        public int ValidateCredentials(byte[] username, byte[] password)
         {
+            //RETURNS -3 IF USER IS DISABLED
+            //RETURNS -2 IF USER IS LOCKED
+            //RETURNS -1 IF USER DATA IS NOT VALID
+            //RETURNS 0  IF USER DOES NOT EXISTS
+            //RETURNS 1  IF USER DATA IS VALID
+
+            //Current UsesDB init
+            List<User> users = db.getUsers();
+
             //Decrypting data
             string outUsername = AES.DecryptData(username, SecretKey.LoadKey(AES.KeyLocation));
             string outPassword = AES.DecryptData(password, SecretKey.LoadKey(AES.KeyLocation));
 
-            Console.WriteLine($"Account - {outUsername} with password {outPassword} verified successfully.\n");
+            for (int i = 0; i < users.Count(); i++)
+                if (users[i].GetUsername() == outUsername && (users[i].GetPassword() == outPassword))
+                {
+                    if (users[i].GetDisabled())
+                        return -3; //USER IS DISABLED
+                    if (users[i].GetLocked())
+                        return -2; //USER IS LOCKED
 
-            //TO IMPLEMENT
+                    Console.WriteLine($"Account - {outUsername} with password {outPassword} verified successfully.\n");
+                    return 1;
+                }
 
-            return true;
-        }
-
-        public void DisableAccount(byte[] username)
-        {
-            Console.WriteLine("Account disabled.\n");
-            //TO IMPLEMENT
-        }
-
-        public void EnableAccount(byte[] username)
-        {
-            Console.WriteLine("Account enabled.\n");
-            //TO IMPLEMENT
-        }
-
-        public void LockAccount(byte[] username)
-        {
-            Console.WriteLine("Account locked.\n");
-            //TO IMPLEMENT
+            return -1; //USER DATA IS NOT VALID
         }
     }
 }

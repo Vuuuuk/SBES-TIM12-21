@@ -11,10 +11,10 @@ namespace Common
     {
         [OperationContract]
         [FaultContract(typeof(InvalidGroupException))]
-        void Login(string username, string password);
+        int Login(string username, string password);
 
         [OperationContract]
         [FaultContract(typeof(InvalidGroupException))]
-        void Logout();
+        int Logout(string username);
     }
 }

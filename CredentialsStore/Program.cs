@@ -54,6 +54,9 @@ namespace CredentialsStore
             Console.WriteLine($"Credentials store servis successfully started by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + ".\n");
 
             Console.ReadLine();
+
+            hostCredentialsStore.Close();
+            hostAuthenticationServiceManagement.Close();
         }
     }
 }

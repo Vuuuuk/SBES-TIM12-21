@@ -46,6 +46,7 @@
     <Compile Include="Certificates\CertificateManager.cs" />
     <Compile Include="Cryptography\AES.cs" />
     <Compile Include="Cryptography\SecretKey.cs" />
+    <Compile Include="Data\User.cs" />
     <Compile Include="Exceptions\InvalidGroupException.cs" />
     <Compile Include="Groups\Groups.cs" />
     <Compile Include="IAccountManagement.cs" />

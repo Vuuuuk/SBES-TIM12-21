@@ -25,33 +25,164 @@ namespace Client
 
             Console.WriteLine($"Currently used by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + "\n");
 
+            string username = "";
+            string password = "";
+            string option = "";
+
             using (AuthenticationProxy authenticationProxy = new AuthenticationProxy(binding, authenticationServiceAddress)) 
             {
-                try
+                using (CredentialsStoreProxy credentialsStoreProxy = new CredentialsStoreProxy(binding, credentialsStoreAddress))
                 {
-                    //CALL AS METHODS HERE
-                }
-                catch (FaultException<InvalidGroupException> ex)
-                {
-                    Console.WriteLine(ex.Detail.exceptionMessage);
-                    authenticationProxy.Abort(); //To avoid AS server faulted state
+                    do
+                    {
+                        Console.WriteLine("-----SERVER OPTIONS-----\n");
+                        Console.WriteLine("1. Sign In");
+                        Console.WriteLine("2. Create Account");
+                        Console.WriteLine("3. Delete Account");
+                        Console.WriteLine("4. Disable Account");
+                        Console.WriteLine("5. Enable Account");
+                        Console.WriteLine("6. Lock Account");
+                        Console.WriteLine("7. Sign Out");
+
+                        Console.Write("\n-> ");
+                        option = Console.ReadLine();
+
+                        switch (option)
+                        {
+                            case "1":
+                                if(username == "")
+                                {
+                                    Console.Write("Your username: ");
+                                    username = Console.ReadLine();
+                                    Console.Write("Your password: ");
+                                    password = Console.ReadLine();
+
+                                    try
+                                    {
+                                        int ret = authenticationProxy.Login(username, password);
+
+                                        switch (ret)
+                                        {
+                                            case -3:
+                                                Console.WriteLine($"\n{username} is DISABLED. Please contact your system administrator.\n");
+                                                username = "";
+                                                break;
+                                            case -2:
+                                                Console.WriteLine($"\n{username} is LOCKED. Please contact your system administrator or wait some time and try again.\n");
+                                                username = "";
+                                                break;
+                                            case -1:
+                                                Console.WriteLine($"\n{username} or your password does not exist please try again.\n");
+                                                username = "";
+                                                break;
+                                            case 0:
+                                                Console.WriteLine($"\n{username} does not exist in our Database. Please contact your system administrator.\n");
+                                                username = "";
+                                                break;
+                                            case 1:
+                                                Console.WriteLine($"\n{username} successfully logged in.\n");
+                                                break;
+                                        }
+                                    }
+
+                                    catch (FaultException<InvalidGroupException> ex)
+                                    {
+                                        Console.WriteLine(ex.Detail.exceptionMessage);
+                                        username = "";
+                                        break;
+                                    }
+                                }
+                                else
+                                    Console.WriteLine("You are already logged in, please log out first.\n");
+
+                                break;
+                            case "2":
+                                try
+                                {
+                                    Console.Write("Account username: ");
+                                    username = Console.ReadLine();
+                                    Console.Write("Account password: ");
+                                    password = Console.ReadLine();
+                                    credentialsStoreProxy.CreateAccount(username, password);
+                                    break;
+
+                                }
+                                catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                            case "3":
+                                try
+                                {
+                                    Console.Write("Account username: ");
+                                    username = Console.ReadLine();
+                                    credentialsStoreProxy.DeleteAccount(username);
+                                    break;
+                                }
+                                catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                            case "4":
+                                try
+                                {
+                                    Console.Write("Account username: ");
+                                    username = Console.ReadLine();
+                                    credentialsStoreProxy.DisableAccount(username);
+                                    break;
+                                }
+                                catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                            case "5":
+                                try
+                                {
+                                    Console.Write("Account username: ");
+                                    username = Console.ReadLine();
+                                    credentialsStoreProxy.EnableAccount(username);
+                                    break;
+                                }
+                                catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                            case "6":
+                                try
+                                {
+                                    Console.Write("Account username: ");
+                                    username = Console.ReadLine();
+                                    credentialsStoreProxy.LockAccount(username);
+                                    break;
+                                }
+                                catch (FaultException<InvalidGroupException> ex)
+                                {
+                                    Console.WriteLine(ex.Detail.exceptionMessage);
+                                    username = "";
+                                    break;
+                                }
+                            case "7":
+                                if (username != "")
+                                {
+                                    authenticationProxy.Logout(username);
+                                    username = "";
+                                }
+                                else
+                                    Console.WriteLine("You have to be logged in first.\n");
+                                break;
+                        }
+
+                    } while (option != "exit");
                 }
             }
-
-            using (CredentialsStoreProxy credentialsStoreProxy = new CredentialsStoreProxy(binding, credentialsStoreAddress)) 
-            {
-                try
-                {
-                    //CALL CS METHODS HERE
-                }
-                catch (FaultException<InvalidGroupException> ex)
-                {
-                    Console.WriteLine(ex.Detail.exceptionMessage);
-                    credentialsStoreProxy.Abort(); //To avoid CS server faulted state
-                }
-            }
-
-            Console.ReadLine();
         }
     }
 }

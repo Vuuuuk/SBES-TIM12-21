@@ -11,45 +11,85 @@ namespace AuthenticationService
 {
     public class AuthenticationService : IAuthenticationService
     {
-        public void Login(string username, string password)
+
+        //Current users database init
+
+        CurrentUsers currentUsers = new CurrentUsers();
+
+        public int Login(string username, string password)
         {
+            //RETURNS -3 IF USER IS DISABLED
+            //RETURNS -2 IF USER IS LOCKED
+            //RETURNS -1 IF USER DATA IS NOT VALID
+            //RETURNS 0  IF USER DOES NOT EXISTS
+            //RETURNS 1  IF USER DATA IS VALID
 
             if (Thread.CurrentPrincipal.IsInRole(Groups.GeneralUser))
             {
-                using (CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.SingletonInstance())
+                CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.SingletonInstance(); //Put it in Using() after removing the singleton pattern
+                try
                 {
-                    try
-                    {
-                        //Encrypting data
-                        byte[] outUsername = AES.EncryptData(username, SecretKey.LoadKey(AES.KeyLocation));
-                        byte[] outPassword = AES.EncryptData(password, SecretKey.LoadKey(AES.KeyLocation));
+                    //If user is already logged in
+                    List<string> users = currentUsers.getCurrentUsers();
+                    for (int i = 0; i < users.Count(); i++)
+                        if (users[i].Split('|')[0].Equals(username))
+                            return 2;
 
-                        if (credentialsStoreProxy.ValidateCredentials(outUsername, outPassword))
-                        {
-                            //TO DO
-                            Console.WriteLine("Successfully logged in.\n");
-                        }
-                        else
-                        {
-                            //TO DO
-                            Console.WriteLine("Not successfully logged in.\n");
-                        }
-                    }
-                    catch (InvalidOperationException ex)
+                    //Encrypting data
+                    byte[] outUsername = AES.EncryptData(username, SecretKey.LoadKey(AES.KeyLocation));
+                    byte[] outPassword = AES.EncryptData(password, SecretKey.LoadKey(AES.KeyLocation));
+
+                    int ret = credentialsStoreProxy.ValidateCredentials(outUsername, outPassword);
+
+                    switch (ret)
                     {
-                        Console.WriteLine("Client certificate check failed. Please contact your system administrator.\n");
+                        case -3:
+                            Console.WriteLine($"{username} is DISABLED. Please contact your system administrator.\n");
+                            return -3;
+                        case -2:
+                            Console.WriteLine($"{username} is LOCKED. Please contact your system administrator or wait some time and try again.\n");
+                            return -2;
+                        case -1:
+                            Console.WriteLine($"{username} or your password does not exist please try again.\n");
+                            return -1;
+                        case 0:
+                            Console.WriteLine($"{username} does not exist in our Database. Please contact your system administrator.\n");
+                            return 0;
+                        default:
+                            currentUsers.addUser(username);
+                            Console.WriteLine($"{username} successfully logged in.\n");
+                            return 1;
                     }
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.WriteLine("Client certificate check failed. Please contact your system administrator.\n");
+                    return 1;
                 }
             }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }
 
-        public void Logout()
+        public int Logout(string username)
         {
+
+            //RETURNS 0 IF LOGOUT IS SUCCESSFUL
+            //RETURNS 1 IF LOGOUT IS NOT SUCCESSFUL
+
             if (Thread.CurrentPrincipal.IsInRole(Groups.GeneralUser))
-                Console.WriteLine($"{Thread.CurrentPrincipal.Identity.Name} successfully logged out.\n");
-                //TO IMPLEMENT
+            {
+                List<string> users = currentUsers.getCurrentUsers();
+
+                for (int i = 0; i < users.Count(); i++)
+                    if (users[i].Split('|')[0].Equals(username))
+                        users.RemoveAt(i);
+
+                    currentUsers.updateCurrentUsers(users);
+
+                Console.WriteLine($"{username} successfully logged out.\n");
+                return 0;
+            }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }
