@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,9 +42,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Certificates\CertificateFormatter.cs" />
+    <Compile Include="Certificates\CertificateManager.cs" />
+    <Compile Include="Config\ConfigurationManager.cs" />
+    <Compile Include="Cryptography\AES.cs" />
+    <Compile Include="Cryptography\SecretKey.cs" />
+    <Compile Include="Data\User.cs" />
+    <Compile Include="Digital Signatures\DigitalSignatureFormatter.cs" />
+    <Compile Include="Digital Signatures\DigitalSignatureHelperFunctions.cs" />
+    <Compile Include="Digital Signatures\DigitalSignatureManager.cs" />
+    <Compile Include="Exceptions\InvalidGroupException.cs" />
+    <Compile Include="Exceptions\InvalidUserException.cs" />
+    <Compile Include="Groups\Groups.cs" />
     <Compile Include="IAccountManagement.cs" />
     <Compile Include="IAuthenticationService.cs" />
+    <Compile Include="IAuthenticationServiceManagement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

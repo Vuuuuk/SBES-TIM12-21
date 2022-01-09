@@ -10,9 +10,11 @@ namespace Common
     public interface IAuthenticationService
     {
         [OperationContract]
-        void Login(string username, string password);
+        [FaultContract(typeof(InvalidGroupException))]
+        int Login(string username, string password);
 
         [OperationContract]
-        void Logout();
+        [FaultContract(typeof(InvalidGroupException))]
+        int Logout(string username);
     }
 }
