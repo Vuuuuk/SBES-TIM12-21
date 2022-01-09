@@ -18,6 +18,7 @@ namespace AuthenticationService
 
         public int Login(string username, string password)
         {
+            //RETURNS -4 IF SIGNATURE IS NOT VALID
             //RETURNS -3 IF USER IS DISABLED
             //RETURNS -2 IF USER IS LOCKED
             //RETURNS -1 IF USER DATA IS NOT VALID
@@ -39,10 +40,20 @@ namespace AuthenticationService
                     byte[] outUsername = AES.EncryptData(username, SecretKey.LoadKey(AES.KeyLocation));
                     byte[] outPassword = AES.EncryptData(password, SecretKey.LoadKey(AES.KeyLocation));
 
-                    int ret = credentialsStoreProxy.ValidateCredentials(outUsername, outPassword);
+                    //Digital signature generation 
+                    byte[] data = new byte[outUsername.Length + outPassword.Length];
+                    Buffer.BlockCopy(outUsername, 0, data, 0, outUsername.Length);
+                    Buffer.BlockCopy(outPassword, 0, data, outUsername.Length, outPassword.Length);
+
+                    byte[] signature = DigitalSignatureHelperFunctions.GenerateDigitalSignature(data);
+
+                    int ret = credentialsStoreProxy.ValidateCredentials(outUsername, outPassword, signature);
 
                     switch (ret)
                     {
+                        case -4:
+                            Console.WriteLine("Signature check failed, your data may be tampered with. Please contact your system administrator.\n");
+                            return -4;
                         case -3:
                             Console.WriteLine($"{username} is DISABLED. Please contact your system administrator.\n");
                             return -3;
@@ -64,7 +75,7 @@ namespace AuthenticationService
                 catch (InvalidOperationException)
                 {
                     Console.WriteLine("Client certificate check failed. Please contact your system administrator.\n");
-                    return 1;
+                    return -1;
                 }
             }
             else
