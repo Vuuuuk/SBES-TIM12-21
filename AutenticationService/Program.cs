@@ -38,19 +38,6 @@ namespace AuthenticationService
             host.Open();
 
             Console.WriteLine($"Authentication servis successfully started by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + ".\n");
-
-            using (CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.SingletonInstance())
-            {
-                try
-                {
-                    //CALL CS METHODS FOR AS HERE
-                }
-                catch (InvalidOperationException)
-                {
-                    Console.WriteLine("Client certificate check failed. Please contact your system administrator.\n");
-                    credentialsStoreProxy.Abort(); //To avoid CS server faulted state
-                }
-            }
             
             Console.ReadLine();
 

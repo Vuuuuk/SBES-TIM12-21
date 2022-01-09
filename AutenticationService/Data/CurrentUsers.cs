@@ -34,7 +34,7 @@ namespace AuthenticationService
         public List<string> getCurrentUsers()
         {
             List<string> currentUsers = new List<string>();
-            StreamReader sr = new StreamReader("currentUsers.txt");
+            StreamReader sr = new StreamReader("currentUsers.txt", Encoding.ASCII);
 
             while(!sr.EndOfStream)
             {

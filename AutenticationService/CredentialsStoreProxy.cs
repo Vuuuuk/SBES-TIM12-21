@@ -12,7 +12,7 @@ namespace AuthenticationService
     class CredentialsStoreProxy : ChannelFactory<IAuthenticationServiceManagement>, IAuthenticationServiceManagement, IDisposable
     {
 
-        [ThreadStatic] //Thread safety is important, every thread is using its own instance
+        //[ThreadStatic] - Thread safety is important, we are going to use this snippet when we are making multiple connection from different places, every thread is using its own instance
         private static CredentialsStoreProxy instance = null; //Singleton pattern instance
 
         IAuthenticationServiceManagement factory = null;
@@ -53,9 +53,9 @@ namespace AuthenticationService
             return instance;
         }
 
-        public int ValidateCredentials(byte[] username, byte[] password)
+        public int ValidateCredentials(byte[] username, byte[] password, byte[] data)
         {
-            return factory.ValidateCredentials(username, password);
+            return factory.ValidateCredentials(username, password, data);
         }
     }
 }

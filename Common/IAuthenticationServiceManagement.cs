@@ -10,7 +10,7 @@ namespace Common
     public interface IAuthenticationServiceManagement
     {
         [OperationContract]
-        int ValidateCredentials(byte[] username, byte[] password);
+        int ValidateCredentials(byte[] username, byte[] password, byte[] data);
 
     }
 }

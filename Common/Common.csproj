@@ -47,6 +47,9 @@
     <Compile Include="Cryptography\AES.cs" />
     <Compile Include="Cryptography\SecretKey.cs" />
     <Compile Include="Data\User.cs" />
+    <Compile Include="Digital Signatures\DigitalSignatureFormatter.cs" />
+    <Compile Include="Digital Signatures\DigitalSignatureHelperFunctions.cs" />
+    <Compile Include="Digital Signatures\DigitalSignatureManager.cs" />
     <Compile Include="Exceptions\InvalidGroupException.cs" />
     <Compile Include="Exceptions\InvalidUserException.cs" />
     <Compile Include="Groups\Groups.cs" />

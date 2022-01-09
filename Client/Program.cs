@@ -63,6 +63,10 @@ namespace Client
 
                                         switch (ret)
                                         {
+                                            case -4:
+                                                Console.WriteLine("Your data may be TAMPERED with. Please contact your system administrator.\n");
+                                                username = "";
+                                                break;
                                             case -3:
                                                 Console.WriteLine($"\n{username} is DISABLED. Please contact your system administrator.\n");
                                                 username = "";
@@ -81,6 +85,9 @@ namespace Client
                                                 break;
                                             case 1:
                                                 Console.WriteLine($"\n{username} successfully logged in.\n");
+                                                break;
+                                            case 2:
+                                                Console.WriteLine($"\n{username} already logged in, try logging out first.\n");
                                                 break;
                                         }
                                     }
@@ -105,6 +112,7 @@ namespace Client
                                     password = Console.ReadLine();
                                     credentialsStoreProxy.CreateAccount(username, password);
                                     Console.WriteLine("Account successfully created.\n");
+                                    username = "";
                                     break;
 
                                 }
@@ -127,6 +135,7 @@ namespace Client
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.DeleteAccount(username);
                                     Console.WriteLine("Account successfully deleted.\n");
+                                    username = "";
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
@@ -148,6 +157,7 @@ namespace Client
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.DisableAccount(username);
                                     Console.WriteLine("Account successfully disabled.\n");
+                                    username = "";
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
@@ -170,6 +180,7 @@ namespace Client
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.EnableAccount(username);
                                     Console.WriteLine("Account successfully enabled.\n");
+                                    username = "";
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
@@ -191,6 +202,7 @@ namespace Client
                                     username = Console.ReadLine();
                                     credentialsStoreProxy.LockAccount(username);
                                     Console.WriteLine("Account successfully locked.\n");
+                                    username = "";
                                     break;
                                 }
                                 catch (FaultException<InvalidGroupException> ex)
@@ -213,6 +225,9 @@ namespace Client
                                 }
                                 else
                                     Console.WriteLine("You have to be logged in first.\n");
+                                break;
+                            default:
+                                Console.WriteLine("Ivalid option, please try again or contact your server administrator.\n");
                                 break;
                         }
 

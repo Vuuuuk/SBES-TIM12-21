@@ -13,7 +13,6 @@ namespace AuthenticationService
     {
 
         //Current users database init
-
         CurrentUsers currentUsers = new CurrentUsers();
 
         public int Login(string username, string password)
@@ -24,6 +23,7 @@ namespace AuthenticationService
             //RETURNS -1 IF USER DATA IS NOT VALID
             //RETURNS 0  IF USER DOES NOT EXISTS
             //RETURNS 1  IF USER DATA IS VALID
+            //RETURNS 2  IF USER IS ALREADY LOGGED IN
 
             if (Thread.CurrentPrincipal.IsInRole(Groups.GeneralUser))
             {
