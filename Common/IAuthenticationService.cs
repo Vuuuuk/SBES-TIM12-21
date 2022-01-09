@@ -9,19 +9,15 @@ namespace Common
     [ServiceContract]
     public interface IAuthenticationService
     {
-
+        [OperationContract]
+        [FaultContract(typeof(InvalidGroupException))]
+        int Login(string username, string password);
 
         [OperationContract]
-        void Login(string username, string password);
-
-
-        [OperationContract]
-        bool CheckIn(string username);
+        [FaultContract(typeof(InvalidGroupException))]
+        int Logout(string username);
 
         [OperationContract]
-        void Logout();
-
-        [OperationContract]
-        void AccountDisabled(string username);
+        int CheckIn(string username);
     }
 }

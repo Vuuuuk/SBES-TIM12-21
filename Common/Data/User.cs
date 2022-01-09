@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Common
 {
-
     public class User
     {
         private string username;
@@ -42,6 +41,8 @@ namespace Common
         public void SetLocked(bool value)
         {
             locked = value;
+            lockedTime = "";
+            loggedInTime = "";
         }
 
         private bool disabled;
@@ -54,41 +55,42 @@ namespace Common
         public void SetDisabled(bool value)
         {
             disabled = value;
+            loggedInTime = "";
         }
 
-        private DateTime lockedTime;
+        private string lockedTime = string.Empty;
 
-        public DateTime GetLockedTime()
+        public string GetLockedTime()
         {
             return lockedTime;
         }
 
-        public void SetLockedTime(DateTime value)
+        public void SetLockedTime()
         {
-            lockedTime = value;
+            lockedTime = DateTime.Now.ToString("HH:mm:ss");
         }
 
-        public User(string username, string password, bool locked, bool disabled, DateTime lockedTime, bool admin)
+        private string loggedInTime;
+
+        public string GetLoggedInTime()
+        {
+            return lockedTime;
+        }
+
+        public void SetLoggedTime()
+        {
+            lockedTime = DateTime.Now.ToString("HH:mm:ss");
+        }
+
+
+        public User(string username, string password, bool locked, bool disabled, string lockedTime, string loggedInTime)
         {
             this.SetUsername(username);
             this.SetPassword(password);
             this.SetLocked(locked);
             this.SetDisabled(disabled);
-            this.SetLockedTime(lockedTime);
-            isAdmin = admin;
-        }
-
-        private bool isAdmin;
-
-        public bool getAdmin()
-        {
-            return isAdmin;
-        }
-
-        public DateTime getLockedDuration()
-        {
-            DateTime ret = GetLockedTime().AddMinutes(5);
-            return ret;
+            this.lockedTime = lockedTime;
+            this.loggedInTime = loggedInTime;
         }
     }
 }

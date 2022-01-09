@@ -13,27 +13,23 @@ namespace Client
 
         public AuthenticationProxy(NetTcpBinding binding, string address) : base(binding, address)
         {
+            //Credentials.Windows.AllowNtlm = false; not usable as we dont have domain controllers.
             factory = this.CreateChannel();
         }
 
-        public void AccountDisabled(string username)
-        {
-            factory.AccountDisabled(username);
-        }
-
-        public bool CheckIn(string username)
+        public int CheckIn(string username)
         {
             return factory.CheckIn(username);
         }
 
-        public void Login(string username, string password)
+        public int Login(string username, string password)
         {
-            factory.Login(username, password);
+            return factory.Login(username, password);
         }
 
-        public void Logout()
+        public int Logout(string username)
         {
-            factory.Logout();
+            return factory.Logout(username);
         }
     }
 }
