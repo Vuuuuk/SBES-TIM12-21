@@ -17,6 +17,11 @@ namespace Client
             factory = this.CreateChannel();
         }
 
+        public int CheckIn(string username)
+        {
+            return factory.CheckIn(username);
+        }
+
         public int Login(string username, string password)
         {
             return factory.Login(username, password);

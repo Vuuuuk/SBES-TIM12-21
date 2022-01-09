@@ -131,5 +131,80 @@ namespace AuthenticationService
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));
         }
+
+        public int CheckIn(string username)
+        {
+            List<string> users = new List<string>();
+
+            CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.SingletonInstance(); //Put it in Using() after removing the singleton pattern
+            try
+            {
+                //Encrypting data
+                byte[] outUsername = AES.EncryptData(username, SecretKey.LoadKey(AES.KeyLocation));
+
+                //Digital signature generation 
+                byte[] signature = DigitalSignatureHelperFunctions.GenerateDigitalSignature(outUsername);
+
+                int result = credentialsStoreProxy.CheckIn(outUsername, signature);
+
+                switch (result)
+                {
+                    case -5:
+                        users = currentUsers.getCurrentUsers();
+                        for(int i = 0; i < users.Count; i++)
+                            if (users[i].Split('|')[0] == username)
+                            {
+                                users.RemoveAt(i);
+                                currentUsers.updateCurrentUsers(users);
+                            }
+                        Console.WriteLine("Signature check failed, your data may be TAMPERED with. Please contact your system administrator.\n");
+                        return -5; //LOGOUT IS NOT SUCCESSFUL
+                    case -4:
+
+                        users = currentUsers.getCurrentUsers();
+                        for (int i = 0; i < users.Count; i++)
+                            if (users[i].Split('|')[0] == username)
+                            {
+                                users.RemoveAt(i);
+                                currentUsers.updateCurrentUsers(users);
+                            }
+                        Console.WriteLine($"{username} -> checked, TIMED OUT.\n");
+                        return -4; //LOGOUT IS NOT SUCCESSFUL
+                    case -3:
+                        users = currentUsers.getCurrentUsers();
+                        for (int i = 0; i < users.Count; i++)
+                            if (users[i].Split('|')[0] == username)
+                            {
+                                users.RemoveAt(i);
+                                currentUsers.updateCurrentUsers(users);
+                            }
+                        Console.WriteLine($"{username} -> checked, DISABLED.\n");
+                        return -3; //LOGOUT IS NOT SUCCESSFUL
+                    case -2:
+                        users = currentUsers.getCurrentUsers();
+                        for (int i = 0; i < users.Count; i++)
+                            if (users[i].Split('|')[0] == username)
+                            {
+                                users.RemoveAt(i);
+                                currentUsers.updateCurrentUsers(users);
+                            }
+                        Console.WriteLine($"{username} -> checked, LOCKED.\n");
+                        return -2; //LOGOUT IS NOT SUCCESSFUL
+                    case -1:
+                        Console.WriteLine($"{username} -> could not be checked, is MISSING from DB.\n");
+                        return -1; //LOGOUT IS NOT SUCCESSFUL
+                    case 0:
+                        Console.WriteLine($"{username} -> checked, no changes.\n");
+                        break;
+                }
+                return 0;
+            }
+
+            catch (InvalidOperationException)
+            {
+                Console.WriteLine("Client certificate check failed. Please contact your system administrator.\n");
+                return -1;
+            }
+        }
     }
 }

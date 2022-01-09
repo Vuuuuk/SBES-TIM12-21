@@ -49,9 +49,15 @@ namespace CredentialsStore
                     if (users[i].GetUsername() == outUsername && (users[i].GetPassword() == outPassword.GetHashCode().ToString()))
                     {
                         if (users[i].GetDisabled())
+                        {
+                            db.addUsers(users);
                             return -3; //USER IS DISABLED
+                        }
                         if (users[i].GetLocked())
+                        {
+                            db.addUsers(users);
                             return -2; //USER IS LOCKED
+                        }
 
                         Console.WriteLine($"Account - {outUsername} with password {outPassword} verified successfully.\n");
                         users[i].SetLoggedTime(); //Confirming when the user logged in
@@ -87,8 +93,8 @@ namespace CredentialsStore
                 return -4; //SIGNATURE IS NOT VALID
         }
 
-        //RETURNS 0  IF DATA IS RESET
-        //RETURNS -1 IF SIGNATURE IS NOT VALID
+        //RETURNS  0  IF DATA IS RESET
+        //RETURNS -1  IF SIGNATURE IS NOT VALID
 
         public int ResetUserOnLogOut(byte[] username, byte[] signature)
         {
@@ -112,6 +118,52 @@ namespace CredentialsStore
             }
             else
                 return -1; //SIGNATURE IS NOT VALID
+        }
+
+        //RETURNS -5 IF THE SIGNATURE IS NOT VALID
+        //RETURNS -4 TIMEOUT
+        //RETURNS -3 DISABLED
+        //RETURNS -2 LOCKED
+        //RETURNS -1 IF USER DOES NOT EXISTS
+        //RETURNS 0  IF USER DATA IS VALID
+
+        public int CheckIn(byte[] username, byte[] signature)
+        {
+            List<User> users = db.getUsers();
+
+            //Digital signature validation 
+            if (DigitalSignatureHelperFunctions.VerifyDigitalSignature(username, signature))
+            {
+                    string outUsername = AES.DecryptData(username, SecretKey.LoadKey(AES.KeyLocation));
+
+                for (int i = 0; i < users.Count(); i++)
+                    if (users[i].GetUsername() == outUsername)
+                    {
+                        if (users[i].GetDisabled())
+                        {
+                            db.addUsers(users);
+                            return -3; //USER IS DISABLED
+                        }
+                        if (users[i].GetLocked())
+                        {
+                            db.addUsers(users);
+                            return -2; //USER IS LOCKED
+                        }
+                        if (users[i].GetLoggedInTime() == "")
+                        {
+                            db.addUsers(users);
+                            return -4; // TIME OUT
+                        }
+                        Console.WriteLine($"Account - {outUsername} checked in successfully.\n");
+                        db.addUsers(users);
+                        return 1;
+                    }
+
+                return -1;
+            }
+            else
+                return -5; //SIGNATURE IS NOT VALID
+
         }
     }
 }
