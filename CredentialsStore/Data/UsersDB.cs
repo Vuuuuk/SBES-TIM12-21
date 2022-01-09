@@ -9,6 +9,10 @@ namespace CredentialsStore
 {
     public class UsersDB
     {
+
+        //Configuration manager init
+        ConfigurationManager conf = new ConfigurationManager();
+
         public void addUser(User U)
         {
             string text = "";
@@ -23,8 +27,8 @@ namespace CredentialsStore
                 disabled = "Y";
             else disabled = "N";
 
-            text = text + U.GetUsername() + "|" + U.GetPassword() + "|" + locked + "|" + disabled + "|" +
-                          U.GetLockedTime();
+            text = text + U.GetUsername() + "|" + U.GetPassword().GetHashCode() + "|" + locked + "|" + disabled + "|" +
+                          U.GetLockedTime() + "|" + U.GetLoggedInTime();
 
             StreamWriter sw = new StreamWriter("usersDB.txt", true, Encoding.ASCII);
             sw.WriteLine(text);
@@ -43,7 +47,7 @@ namespace CredentialsStore
                 if (U.GetLocked()) locked = "Y"; else locked = "N";
                 if (U.GetDisabled()) disabled = "Y"; else disabled = "N";
                 text = text + U.GetUsername() + "|" + U.GetPassword() + "|" + locked + "|" + disabled + "|" +
-                    U.GetLockedTime() + "\n";
+                    U.GetLockedTime() + "|" + U.GetLoggedInTime() + "\n";
             }
             StreamWriter sw = new StreamWriter("usersDB.txt", false, Encoding.ASCII);
             sw.Write(text);
@@ -74,7 +78,7 @@ namespace CredentialsStore
                     //Automatic account unlocking based on getUsers() method call
                     if (locked)
                     {
-                        int vreme =  ((int.Parse(args[4].Split(':')[0]) * 60) + (int.Parse(args[4].Split(':')[1]))) + 1; //alter with the configuration parameter
+                        int vreme =  ((int.Parse(args[4].Split(':')[0]) * 60) + (int.Parse(args[4].Split(':')[1]))) + conf.GetLockDuration(); 
                         if (vreme <= ((DateTime.Now.Hour * 60) + DateTime.Now.Minute))
                         {
                             locked = false;
@@ -82,7 +86,18 @@ namespace CredentialsStore
                         }
                     }
 
-                    User U = new User(args[0], args[1], locked, disabled, args[4]);
+                    //Automatic account 
+                    if (args[5] != string.Empty)
+                    {
+                        int lVreme = ((int.Parse(args[5].Split(':')[0]) * 60) + (int.Parse(args[5].Split(':')[1]))) + conf.GetTimeOutInterval(); 
+                        if (lVreme <= ((DateTime.Now.Hour * 60) + DateTime.Now.Minute))
+                        {
+                            disabled = true;
+                            args[5] = "";
+                        }
+                    }
+
+                    User U = new User(args[0], args[1], locked, disabled, args[4], args[5]);
                     ret.Add(U);
                     line = sr.ReadLine();
                 }

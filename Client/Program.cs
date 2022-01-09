@@ -76,11 +76,11 @@ namespace Client
                                                 username = "";
                                                 break;
                                             case -1:
-                                                Console.WriteLine($"\n{username} or your password does not exist please try again.\n");
+                                                Console.WriteLine($"\n{username} does not exist in our Database. Please contact your system administrator.\n");
                                                 username = "";
                                                 break;
                                             case 0:
-                                                Console.WriteLine($"\n{username} does not exist in our Database. Please contact your system administrator.\n");
+                                                Console.WriteLine($"\n{username} password does not match please try again.\n");
                                                 username = "";
                                                 break;
                                             case 1:
@@ -88,6 +88,7 @@ namespace Client
                                                 break;
                                             case 2:
                                                 Console.WriteLine($"\n{username} already logged in, try logging out first.\n");
+                                                username = "";
                                                 break;
                                         }
                                     }
@@ -96,6 +97,11 @@ namespace Client
                                     {
                                         Console.WriteLine(ex.Detail.exceptionMessage);
                                         username = "";
+                                        break;
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        Console.WriteLine(e.Message);
                                         break;
                                     }
                                 }
@@ -126,6 +132,11 @@ namespace Client
                                 {
                                     Console.WriteLine(ex.Detail.exceptionMessage);
                                     username = "";
+                                    break;
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e.Message);
                                     break;
                                 }
                             case "3":
@@ -222,6 +233,7 @@ namespace Client
                                 {
                                     authenticationProxy.Logout(username);
                                     username = "";
+                                    Console.WriteLine("You have successfully logged out.\n");
                                 }
                                 else
                                     Console.WriteLine("You have to be logged in first.\n");

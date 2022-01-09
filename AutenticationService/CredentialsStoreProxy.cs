@@ -53,9 +53,14 @@ namespace AuthenticationService
             return instance;
         }
 
-        public int ValidateCredentials(byte[] username, byte[] password, byte[] data)
+        public int ValidateCredentials(byte[] username, byte[] password, byte[] signature)
         {
-            return factory.ValidateCredentials(username, password, data);
+            return factory.ValidateCredentials(username, password, signature);
+        }
+
+        public int ResetUserOnLogOut(byte[] username, byte[] signature)
+        {
+            return factory.ResetUserOnLogOut(username, signature);
         }
     }
 }

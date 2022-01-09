@@ -17,7 +17,7 @@ namespace CredentialsStore
         {
             if (Thread.CurrentPrincipal.IsInRole(Groups.AdminUser))
             {
-                User user = new User(username, password, false, false, string.Empty);
+                User user = new User(username, (password.GetHashCode()).ToString(), false, false, string.Empty, string.Empty);
                 List<User> users = handler.getUsers();
                 if (users.FindIndex(o => o.GetUsername() == username) == -1)
                 {

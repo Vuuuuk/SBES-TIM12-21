@@ -20,8 +20,8 @@ namespace AuthenticationService
             //RETURNS -4 IF SIGNATURE IS NOT VALID
             //RETURNS -3 IF USER IS DISABLED
             //RETURNS -2 IF USER IS LOCKED
-            //RETURNS -1 IF USER DATA IS NOT VALID
-            //RETURNS 0  IF USER DOES NOT EXISTS
+            //RETURNS -1 IF USER DATA DOES NOT EXIST
+            //RETURNS 0  IF USER PASSWORD IS NOT VALID
             //RETURNS 1  IF USER DATA IS VALID
             //RETURNS 2  IF USER IS ALREADY LOGGED IN
 
@@ -61,10 +61,10 @@ namespace AuthenticationService
                             Console.WriteLine($"{username} is LOCKED. Please contact your system administrator or wait some time and try again.\n");
                             return -2;
                         case -1:
-                            Console.WriteLine($"{username} or your password does not exist please try again.\n");
+                            Console.WriteLine($"{username} does not exist in our Database. Please contact your system administrator.\n");
                             return -1;
                         case 0:
-                            Console.WriteLine($"{username} does not exist in our Database. Please contact your system administrator.\n");
+                            Console.WriteLine($"Password for {username} is wrong.\n");
                             return 0;
                         default:
                             currentUsers.addUser(username);
@@ -98,8 +98,35 @@ namespace AuthenticationService
 
                     currentUsers.updateCurrentUsers(users);
 
-                Console.WriteLine($"{username} successfully logged out.\n");
-                return 0;
+                CredentialsStoreProxy credentialsStoreProxy = CredentialsStoreProxy.SingletonInstance(); //Put it in Using() after removing the singleton pattern
+                try
+                {
+                    //Encrypting data
+                    byte[] outUsername = AES.EncryptData(username, SecretKey.LoadKey(AES.KeyLocation));
+
+                    //Digital signature generation 
+                    byte[] signature = DigitalSignatureHelperFunctions.GenerateDigitalSignature(outUsername);
+
+                    int ret = credentialsStoreProxy.ResetUserOnLogOut(outUsername, signature);
+
+                    switch (ret)
+                    {
+                        case -1:
+                            Console.WriteLine("Signature check failed, your data may be tampered with. Please contact your system administrator.\n");
+                            return -1; //LOGOUT IS NOT SUCCESSFUL
+                        case 0:
+                            Console.WriteLine($"{username} logged out and user data in DB is successfully reset.\n");
+                            break;
+                    }
+
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.WriteLine("Client certificate check failed. Please contact your system administrator.\n");
+                    return -1;
+                }
+
+                return 0; //LOGOUT IS SUCCESSFUL
             }
             else
                 throw new FaultException<InvalidGroupException>(new InvalidGroupException("Invalid Group permissions, please contact your system administrator if you think this is a mistake.\n"));

@@ -42,6 +42,7 @@ namespace Common
         {
             locked = value;
             lockedTime = "";
+            loggedInTime = "";
         }
 
         private bool disabled;
@@ -54,6 +55,8 @@ namespace Common
         public void SetDisabled(bool value)
         {
             disabled = value;
+            loggedInTime = "";
+            lockedTime = "";
         }
 
         private string lockedTime = string.Empty;
@@ -68,13 +71,31 @@ namespace Common
             lockedTime = DateTime.Now.ToString("HH:mm:ss");
         }
 
-        public User(string username, string password, bool locked, bool disabled, string lockedTime)
+        private string loggedInTime;
+
+        public string GetLoggedInTime()
+        {
+            return loggedInTime;
+        }
+
+        public void SetLoggedTime()
+        {
+            loggedInTime = DateTime.Now.ToString("HH:mm:ss");
+        }
+
+        public void SetLoggedTime(string timeReset)
+        {
+            loggedInTime = timeReset;
+        }
+
+        public User(string username, string password, bool locked, bool disabled, string lockedTime, string loggedInTime)
         {
             this.SetUsername(username);
             this.SetPassword(password);
             this.SetLocked(locked);
             this.SetDisabled(disabled);
             this.lockedTime = lockedTime;
+            this.loggedInTime = loggedInTime;
         }
     }
 }

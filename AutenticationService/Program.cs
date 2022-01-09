@@ -39,7 +39,7 @@ namespace AuthenticationService
 
             Console.WriteLine($"Authentication servis successfully started by [{WindowsIdentity.GetCurrent().User}] -> " + WindowsIdentity.GetCurrent().Name + ".\n");
             
-            Console.ReadLine();
+            Console.ReadKey();
 
             //RESET CURRENTLY LOGGED IN USERS ON AS CLOSE
 
