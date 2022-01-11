@@ -191,6 +191,13 @@ namespace AuthenticationService
                         Console.WriteLine($"{username} -> checked, LOCKED.\n");
                         return -2; //LOGOUT IS NOT SUCCESSFUL
                     case -1:
+                        users = currentUsers.getCurrentUsers();
+                        for (int i = 0; i < users.Count; i++)
+                            if (users[i].Split('|')[0] == username)
+                            {
+                                users.RemoveAt(i);
+                                currentUsers.updateCurrentUsers(users);
+                            }
                         Console.WriteLine($"{username} -> could not be checked, is MISSING from DB.\n");
                         return -1; //LOGOUT IS NOT SUCCESSFUL
                     case 0:

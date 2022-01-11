@@ -77,6 +77,7 @@ namespace CredentialsStore
 
                     //Automatic account unlocking based on getUsers() method call
                     if (locked)
+                        if(args[4] != string.Empty)
                     {
                         int vreme =  ((int.Parse(args[4].Split(':')[0]) * 60) + (int.Parse(args[4].Split(':')[1]))) + conf.GetLockDuration(); 
                         if (vreme <= ((DateTime.Now.Hour * 60) + DateTime.Now.Minute))
@@ -93,6 +94,7 @@ namespace CredentialsStore
                         if (lVreme <= ((DateTime.Now.Hour * 60) + DateTime.Now.Minute))
                         {
                             disabled = true;
+                            locked = false;
                             args[5] = "";
                         }
                     }
