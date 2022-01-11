@@ -62,5 +62,10 @@ namespace AuthenticationService
         {
             return factory.ResetUserOnLogOut(username, signature);
         }
+
+        public int CheckIn(byte[] username, byte[] signature)
+        {
+            return factory.CheckIn(username, signature);
+        }
     }
 }

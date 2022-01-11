@@ -16,5 +16,8 @@ namespace Common
         [OperationContract]
         [FaultContract(typeof(InvalidGroupException))]
         int Logout(string username);
+
+        [OperationContract]
+        int CheckIn(string username);
     }
 }

@@ -6,6 +6,8 @@ using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client
 {
@@ -85,6 +87,7 @@ namespace Client
                                                 break;
                                             case 1:
                                                 Console.WriteLine($"\n{username} successfully logged in.\n");
+                                                Task t = Task.Factory.StartNew(() => DoCheck(authenticationProxy, ref username));
                                                 break;
                                             case 2:
                                                 Console.WriteLine($"\n{username} already logged in, try logging out first.\n");
@@ -247,5 +250,41 @@ namespace Client
                 }
             }
         }
+
+        static void DoCheck(AuthenticationProxy proxy, ref string user)
+        {
+            while (proxy.State == CommunicationState.Opened)
+            {
+                int result = proxy.CheckIn(user);
+
+                switch (result)
+                {
+                    case -4:
+                        Console.WriteLine("\n{0} Your Account has been TIMED OUT for inactivity.\n", user);
+                        Console.Write("->");
+                        user = "";
+                        return;
+                    case -3:
+                        Console.WriteLine("\n{0} Your Account has been DISABLED and logged out.\n", user);
+                        Console.Write("->");
+                        user = "";
+                        return;
+                    case -2:
+                        Console.WriteLine("\n{0} Your Account has been LOCKED and logged out.\n", user);
+                        Console.Write("->");
+                        user = "";
+                        return;
+                    case -1:
+                        Console.WriteLine("\n{0} Could not be checked, is MISSING from DB and logged out.\n", user);
+                        Console.Write("->");
+                        user = "";
+                        return;
+                    default:
+                        Thread.Sleep(2500);
+                        break;
+                }
+            }
+        }
+
     }
 }
